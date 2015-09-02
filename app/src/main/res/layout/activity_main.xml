@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/show_number"
         android:layout_marginBottom="20dp"
-        android:textSize="30dp"
+        android:textSize="29dp"
         android:textStyle="bold"
         android:layout_above="@+id/start_button"
         android:layout_centerHorizontal="true"
