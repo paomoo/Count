@@ -1,4 +1,4 @@
-package count.bianwu.count;
+package count;
 
 import android.content.res.ColorStateList;
 import android.text.TextUtils;
@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Random;
+
+import count.bianwu.count.R;
 
 /**
  * Created by wb on 2015/9/25.
