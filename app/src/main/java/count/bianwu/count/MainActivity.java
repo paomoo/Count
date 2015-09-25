@@ -35,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
     private EditText mIntervalEditText;
     private int amountNumbers = 20;
     private Double interval_time =01.00 ;
+    Thread taskThread = null;
 //    private int interval_time =1;
     int sum = 0;
     @Override
@@ -60,24 +61,38 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void startCount( View v ) {
-        //initialize
-        sum = 0;
-        String amount = mAmountEditText.getText().toString();
-        if(amount!=null && !TextUtils.isEmpty(amount)) {
-            amountNumbers = Integer.valueOf(amount);
-        }
-        String interval = mIntervalEditText.getText().toString();
-        if(interval!=null && !TextUtils.isEmpty(interval)) {
-            interval_time = Double.valueOf(interval);
+
+        if(mStartButton.getText().toString().equalsIgnoreCase("START")) {
+            //initialize
+            sum = 0;
+            String amount = mAmountEditText.getText().toString();
+            if( !TextUtils.isEmpty(amount)) {
+                amountNumbers = Integer.valueOf(amount);
+            }
+            String interval = mIntervalEditText.getText().toString();
+            if(!TextUtils.isEmpty(interval)) {
+                interval_time = Double.valueOf(interval);
 //            interval_time = Integer.valueOf(interval);
+            }
+            //        mStartButton.setEnabled(false);
+            mStartButton.setText(" STOP ");
+            taskThread = new Thread(new Task());
+            taskThread.start();
         }
-        mStartButton.setEnabled(false);
-        new Thread(new Task()).start();
+        else {
+            // kill thread
+            //  Thread currentThread  = Thread.currentThread();
+            if(taskThread != null) {
+                taskThread=null;
+                //   taskThread  = null;
+                //  mStartButton.setText("START");
+            }
+        }
     }
 
     public void setNumber(String number) {
          ColorStateList presumeColor = getResources().getColorStateList(R.color.black);
-       if(presumeColor.getDefaultColor() == mShowNumberTextView.getCurrentTextColor()) {
+       if(presumeColor.getDefaultColor()!=null && presumeColor.getDefaultColor() == mShowNumberTextView.getCurrentTextColor()) {
             mShowNumberTextView.setTextColor(getResources().getColorStateList(R.color.blue));
         }
         else
@@ -102,7 +117,12 @@ public class MainActivity extends ActionBarActivity {
                 Log.i("random_Number", "" + random_Number);
                 try {
                     //  TimeUnit.SECONDS.sleep(5);
-                    Thread.sleep((long) (interval_time*1000));
+                    Thread currentThread  = Thread.currentThread();
+
+                    if(taskThread == currentThread)
+                        Thread.sleep((long) (interval_time*1000));
+                    else // taskThread == null , help to check thread is null, then will not continue run
+                        break;
 //                    Thread.sleep(interval_time*1000);
                 } catch (InterruptedException e) {
                     Log.i("sleep", "Error");
@@ -112,7 +132,8 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void run() {
                     setNumber(String.valueOf(sum));
-                    mStartButton.setEnabled(true);
+                    //                     mStartButton.setEnabled(true);
+                    mStartButton.setText("START");
                 }
             });
         }
