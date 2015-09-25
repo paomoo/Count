@@ -1,8 +1,8 @@
 package count.bianwu.count;
 
 import android.content.res.ColorStateList;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -17,16 +17,9 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mShowNumberTextView = (TextView) findViewById(R.id.show_number);
-        mStartButton = (Button)findViewById(R.id.start_button);
-        mAmountEditText = (EditText)findViewById(R.id.amount_numbers);
-        mIntervalEditText = (EditText)findViewById(R.id.second_time);
-    }
-
+    Thread taskThread = null;
+    //    private int interval_time =1;
+    int sum = 0;
     // UI fileds
 //    private Task task = new Task(this);
     private TextView mShowNumberTextView;
@@ -35,9 +28,17 @@ public class MainActivity extends ActionBarActivity {
     private EditText mIntervalEditText;
     private int amountNumbers = 20;
     private Double interval_time =01.00 ;
-    Thread taskThread = null;
-//    private int interval_time =1;
-    int sum = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mShowNumberTextView = (TextView) findViewById(R.id.show_number);
+        mStartButton = (Button) findViewById(R.id.start_button);
+        mAmountEditText = (EditText) findViewById(R.id.amount_numbers);
+        mIntervalEditText = (EditText) findViewById(R.id.second_time);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -92,7 +93,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void setNumber(String number) {
          ColorStateList presumeColor = getResources().getColorStateList(R.color.black);
-       if(presumeColor.getDefaultColor()!=null && presumeColor.getDefaultColor() == mShowNumberTextView.getCurrentTextColor()) {
+        if (presumeColor.getDefaultColor() == mShowNumberTextView.getCurrentTextColor()) {
             mShowNumberTextView.setTextColor(getResources().getColorStateList(R.color.blue));
         }
         else
