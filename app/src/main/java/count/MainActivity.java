@@ -2,6 +2,7 @@ package count;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,9 +14,11 @@ import count.bianwu.count.R;
 
 public class MainActivity extends ActionBarActivity {
 
-    Thread taskThread = null;
+    private Thread taskThread = null;
+    private CountTask countTask = null;
     // UI fileds
     private Button mStartButton;
+    private Button mResultButton;
     private TextView mShowNumberTextView;
     private int amountNumbers = 20;
     private Double interval_time =01.00 ;
@@ -26,6 +29,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mStartButton = (Button) findViewById(R.id.start_button);
+        mResultButton = (Button) findViewById(R.id.result_button);
         mShowNumberTextView = (TextView) findViewById(R.id.show_number);
         view = findViewById(android.R.id.content);
     }
@@ -57,24 +61,28 @@ public class MainActivity extends ActionBarActivity {
         if(mStartButton.getText().toString().equalsIgnoreCase("START")) {
             //initialize
             mStartButton.setText(" STOP ");
-            taskThread = new Thread(new CountTask(view, this));
+            countTask = new CountTask(view, this);
+            taskThread = new Thread(countTask);
             taskThread.start();
+            mResultButton.setEnabled(false);
         }
         else {
-            // kill thread
+            // stop thread instead of kill thread
             if(taskThread != null) {
-                taskThread=null;
+                countTask.terminate();
+                try {
+                    taskThread.join();
+                } catch (InterruptedException e) {
+                    Log.i("Thread join error", "Error");
+                }
             }
+            mResultButton.setEnabled(true);
         }
     }
 
     public void result(View v) {
         mShowNumberTextView.setVisibility(View.VISIBLE);
 
-    }
-
-    public Thread getTaskThread() {
-        return taskThread;
     }
 
 }

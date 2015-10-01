@@ -15,24 +15,27 @@ import count.bianwu.count.R;
 /**
  * Created by wb on 2015/9/25.
  */
-class CountTask implements Runnable {
+public class CountTask implements Runnable {
 
 
     int sum = 0;
     private MainActivity mainActivity;
     private TextView mShowNumberTextView;
     private Button mStartButton;
+    private Button mResultButton;
     private int amountNumbers = 20;
     private Double interval_time = 01.00;
     private View mainView;
     private EditText mAmountEditText;
     private EditText mIntervalEditText;
+    private volatile boolean running = true;
 
     CountTask(View view, MainActivity activity) {
         mainView = view;
         mainActivity = activity;
         mShowNumberTextView = (TextView) mainView.findViewById(R.id.show_number);
         mStartButton = (Button) mainView.findViewById(R.id.start_button);
+        mResultButton = (Button) mainView.findViewById(R.id.result_button);
         mAmountEditText = (EditText) mainView.findViewById(R.id.amount_numbers);
         mIntervalEditText = (EditText) mainView.findViewById(R.id.second_time);
         String amount = mAmountEditText.getText().toString();
@@ -43,6 +46,10 @@ class CountTask implements Runnable {
         if (!TextUtils.isEmpty(interval)) {
             interval_time = Double.valueOf(interval);
         }
+    }
+
+    public void terminate() {
+        running = false;
     }
 
     public void run() {
@@ -63,13 +70,10 @@ class CountTask implements Runnable {
             try {
                 //  TimeUnit.SECONDS.sleep(5);
                 Thread.sleep((long) (interval_time * 1000));
-                Thread currentThread = Thread.currentThread();
-                if (mainActivity.getTaskThread() == currentThread)
-                    continue;
-                else
-                    // taskThread == null , help to check thread is null, then will not continue run
+                if (!running)
                     break;
             } catch (InterruptedException e) {
+                running = false;
                 Log.i("sleep", "Error");
             }
         }
@@ -80,8 +84,10 @@ class CountTask implements Runnable {
                 // set to invisible until the click result button
                 mShowNumberTextView.setVisibility(View.INVISIBLE);
                 mStartButton.setText("START");
+                mResultButton.setEnabled(true);
             }
         });
+
     }
 
 
